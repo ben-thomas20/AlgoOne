@@ -1,0 +1,153 @@
+# Longshot NO Buyer Strategy Configuration
+
+strategy:
+  name: "longshot_no_buyer"
+  description: "Buy NO contracts at longshot prices in Top 5 profitable categories"
+  version: "2.0.0"
+  
+  # Trading mode
+  paper_trading: true  # Set to false for live trading (requires auth)
+  
+  # Initial capital
+  initial_bankroll: 1000.0  # USD
+
+# Market Scanner Configuration
+scanner:
+  min_yes_price: 1  # Minimum YES price in cents
+  max_yes_price: 10  # Maximum YES price in cents (longshot threshold)
+  min_volume: 100  # Minimum volume to consider market liquid
+  min_open_interest: 10  # Minimum open interest
+  
+  # Top 5 Profitable Categories ONLY (from portfolio backtest)
+  # All other categories are automatically excluded
+  included_categories:
+    - Science/Tech   # 3.45% expected return
+    - Esports        # 2.29% expected return
+    - Entertainment  # 2.17% expected return
+    - Media          # 1.80% expected return
+    - Politics       # 0.95% expected return (high volume)
+  
+  # Unprofitable categories (DO NOT TRADE)
+  # Sports: -0.60%, Crypto: -4.14%, Weather, World Events, Finance
+
+# Opportunity Scorer Configuration
+scorer:
+  min_confidence_score: 60.0  # Minimum score to consider trading (0-100)
+  min_volume_score: 30.0  # Minimum volume score (0-100)
+  max_kelly_fraction: 0.25  # Maximum Kelly fraction (25% cap for safety)
+  
+  # Historical expected returns by category (from portfolio backtest)
+  # ONLY Top 5 categories - all others filtered by scanner
+  category_expected_returns:
+    Science/Tech: 0.0345
+    Esports: 0.0229
+    Entertainment: 0.0217
+    Media: 0.0180
+    Politics: 0.0095
+
+# Position Manager Configuration
+position_manager:
+  max_position_pct: 0.10  # Max 10% of bankroll per position
+  max_category_pct: 0.30  # Max 30% of bankroll per category
+  max_total_exposure_pct: 0.80  # Max 80% of bankroll deployed
+  max_positions: 20  # Maximum concurrent positions
+
+# Risk Management
+risk:
+  # Stop loss thresholds
+  max_daily_loss_pct: 0.10  # Halt trading if daily loss exceeds 10%
+  max_position_loss_pct: 0.50  # Close position if loss exceeds 50%
+  
+  # Circuit breakers
+  max_consecutive_losses: 5  # Pause after 5 consecutive losses
+  pause_duration_seconds: 3600  # Pause for 1 hour
+  
+  # Monitoring
+  alert_on_drawdown_pct: 0.15  # Alert if drawdown exceeds 15%
+  alert_on_low_fill_rate: 0.20  # Alert if fill rate drops below 20%
+
+# Execution Configuration
+execution:
+  scan_interval_seconds: 300  # Scan markets every 5 minutes
+  order_timeout_seconds: 3600  # Cancel orders after 1 hour
+  max_order_retries: 3  # Retry failed orders up to 3 times
+  retry_delay_seconds: 60  # Wait 60s between retries
+
+# Dashboard & Logging
+monitoring:
+  log_performance_every_n_scans: 5  # Log performance every 5 scans
+  export_data_every_n_scans: 10  # Export CSV data every 10 scans
+  print_status_every_n_scans: 5  # Print status every 5 scans
+  
+  output_directory: "output/trading"
+  
+  # Metrics to track
+  track_metrics:
+    - win_rate
+    - fill_rate
+    - sharpe_ratio
+    - max_drawdown
+    - total_return
+    - capital_deployed
+
+# API Configuration
+api:
+  kalshi:
+    host: "https://api.elections.kalshi.com/trade-api/v2"
+    timeout_seconds: 30
+    max_retries: 3
+    rate_limit_per_second: 10
+    
+    # Authentication (required for live trading)
+    # Set via environment variables:
+    # KALSHI_EMAIL or KALSHI_API_KEY
+    # KALSHI_PASSWORD (if using email auth)
+    auth_method: null  # "email" or "api_key"
+
+# Alerts & Notifications (optional)
+alerts:
+  enabled: false
+  
+  # Email alerts
+  email:
+    enabled: false
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    from_address: "your-email@gmail.com"
+    to_address: "your-email@gmail.com"
+    # SMTP_PASSWORD should be set via environment variable
+  
+  # Slack alerts  
+  slack:
+    enabled: false
+    webhook_url: null  # Set via SLACK_WEBHOOK_URL env var
+  
+  # Alert conditions
+  conditions:
+    - type: "daily_loss"
+      threshold: 0.10
+    - type: "fill_rate"
+      threshold: 0.20
+    - type: "drawdown"
+      threshold: 0.15
+    - type: "position_loss"
+      threshold: 0.50
+
+# Backtest Configuration
+backtest:
+  data_directory: "data/kalshi"
+  min_volume_usd: 100.0
+  
+  # Date range (null = all available data)
+  start_date: null
+  end_date: null
+  
+  # Categories to include
+  include_categories: null  # null = all except excluded
+
+# Development & Testing
+development:
+  debug_mode: false
+  verbose_logging: false
+  save_debug_logs: false
+  test_mode: false  # If true, use mock data
