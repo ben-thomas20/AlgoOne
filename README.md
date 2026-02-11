@@ -1,4 +1,4 @@
-![logo](output/Group 2.png)
+![logo](output/Group_2.png)
 
 # ERSO: a prediction market maker strategy focused on longshot YES contracts.
 
