@@ -1,3 +1,5 @@
+![logo](Untitled.svg)
+
 # ERSO: a prediction market maker strategy focused on longshot YES contracts.
 
 The **Longshot YES Maker Strategy** is a market-making approach for Kalshi prediction markets that capitalizes on systematic mispricing caused by optimism bias in retail traders. By acting as a liquidity provider (maker) rather than a liquidity consumer (taker), we capture the "Optimism Tax" - the premium that takers pay for affirmative outcomes at longshot prices.
