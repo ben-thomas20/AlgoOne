@@ -17,7 +17,9 @@ $10,000 starting capital, Jan 2024 - Nov 2025:
 | Max Drawdown | 12.8% |
 | Trades | 41,304 |
 
+
 ![Backtest Results](output/v2_backtest.png)
+*Chart shows a $100K starting capital run (268% return, 3.62 Sharpe, 4.65% max drawdown). The higher capital base allows more concurrent positions and smoother returns, but return compresses slightly vs $10K due to category exposure caps binding more frequently.*
 
 ## How It Works
 
